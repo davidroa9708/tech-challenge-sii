@@ -1,0 +1,27 @@
+
+service: serverless-sii
+
+plugins:
+  - serverless-jetpack
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: us-east-2
+  timeout: 60
+  environment:
+      THE_MOVIE_API_KEY: ${ssm:/aws/reference/secretsmanager/sii_the_movie_api_key_secret}
+      MONGO_URI: ${ssm:/aws/reference/secretsmanager/sii_mongo_uri_secret}
+
+functions:
+  main:
+    handler: dist/lambda.handler
+    events:
+      - http:
+          method: ANY
+          path: /
+      - http:
+          method: ANY
+          path: '{proxy+}'
+
